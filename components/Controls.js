@@ -142,14 +142,7 @@ class Controls extends Component {
             onMorePress={() => onMorePress()}
             theme={{ title: theme.title, more: theme.more }}
           />
-          <Animated.View style={[styles.flex, { transform: [{ scale: this.scale }] }]}>
-            <PlayButton
-              onPress={() => this.props.togglePlay()}
-              paused={paused}
-              loading={loading}
-              theme={center}
-            />
-          </Animated.View>
+          {this.renderPlayButton()}
           <ControlBar
             toggleFS={() => this.props.toggleFS()}
             toggleMute={() => this.props.toggleMute()}
@@ -177,6 +170,33 @@ class Controls extends Component {
     }
     return this.displayedControls()
   }
+
+  renderPlayButton(){
+    const {
+      paused,
+      loading,
+      theme,
+      playButton,
+      togglePlay,
+    } = this.props;
+
+    const { center } = theme;
+
+    if (playButton) {
+      return playButton({paused, onPress: togglePlay});
+    }
+
+    return (
+      <Animated.View style={[styles.flex, { transform: [{ scale: this.scale }] }]}>
+        <PlayButton
+          onPress={togglePlay}
+          paused={paused}
+          loading={loading}
+          theme={center}
+        />
+      </Animated.View>
+    );
+  }
 }
 
 Controls.propTypes = {
@@ -197,7 +217,12 @@ Controls.propTypes = {
   duration: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   logo: PropTypes.string.isRequired,
-  theme: PropTypes.object.isRequired
-}
+  theme: PropTypes.object.isRequired,
+  playButton: PropTypes.func,
+};
+
+Controls.defaultProps = {
+  playButton: undefined,
+};
 
 export { Controls }
